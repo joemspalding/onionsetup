@@ -2,12 +2,7 @@ param(
     [string]$Name
 )
 
-md $Name
-cd $Name
-
-# Create Solution
-dotnet new sln -o $Name
-$SlnFolder = $Name+"/"+$Name+".sln";
+$RandomHelper = Get-Content -Path ./RandomHelper.cs
 
 $UILayer = "4-UI";
 $InfraLayer = "3-Infrastructure";
@@ -27,7 +22,10 @@ $InfraDataTest = $Name+".Infrastructure.Data.Test";
 $ServiceServiceTest = $Name+".Service.Service.Test";
 $DomainTest = $Name+".Domain.Test";
 
+$RandomHelper[2] -replace"asdf", $DomainTest -as [string]
+
 # Set Variables for folders
+$SlnFolder = $Name+"/"+$Name+".sln";
 $UIFolder=$UILayer+"/"+$UI+"/"+$UI+".csproj";
 $InfraDataFolder=$InfraLayer+"/"+$InfraData+"/"+$InfraData+".csproj";
 $ServiceAbstractFolder=$ServiceLayer+"/"+$ServiceAbstract+"/"+$ServiceAbstract+".csproj";
@@ -40,9 +38,18 @@ $UITestFolder=$UILayer+"/"+$UITest+"/"+$UITest+".csproj";
 $InfraDataTestFolder=$InfraLayer+"/"+$InfraDataTest+"/"+$InfraDataTest+".csproj";
 $ServiceServiceTestFolder=$ServiceLayer+"/"+$ServiceServiceTest+"/"+$ServiceServiceTest+".csproj";
 $DomainTestFolder=$DomainLayer+"/"+$DomainTest+"/"+$DomainTest+".csproj";
+cls
+echo $DomainTest
+echo $RandomHelper[2]
+echo $RandomHelper[2].GetType()
+
+md $Name
+cd $Name
+
+# Create Solution
+dotnet new sln -o $Name
 
 # Create project files
-
 md $UILayer
 md $InfraLayer
 md $ServiceLayer
@@ -68,7 +75,11 @@ cd $DomainLayer
 dotnet new classlib -o $DomainObject
 dotnet new classlib -o $DomainAbstract
 dotnet new mstest -o $DomainTest
-cd..
+cd $DomainTest
+New-Item -Path . -Name RandomHelper.cs -Value $RandomHelper
+New-Item -Path . -Name ModelFactory.cs
+cd ..
+cd ..
 # Add project references to solution
 dotnet sln $SlnFolder add $UIFolder
 dotnet sln $SlnFolder add $InfraDataFolder
