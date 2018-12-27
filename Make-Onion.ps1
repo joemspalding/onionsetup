@@ -51,7 +51,10 @@ md $DomainLayer
 cd $UILayer
 dotnet new webapi -o $UI
 dotnet new mstest -o $UITest
-cd..
+cd $UI
+md ViewModels
+cd ..
+cd ..
 cd $InfraLayer
 dotnet new classlib -o $InfraData
 dotnet new mstest -o $InfraDataTest
