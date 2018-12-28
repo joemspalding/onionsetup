@@ -22,7 +22,8 @@ $InfraDataTest = $Name+".Infrastructure.Data.Test";
 $ServiceServiceTest = $Name+".Service.Service.Test";
 $DomainTest = $Name+".Domain.Test";
 
-$RandomHelper[2] -replace"asdf", $DomainTest -as [string]
+$RandomHelper[2] = $RandomHelper[2] -as [string] -replace "namespace (\w+) {", ("namespace "+$DomainTest+" {")
+echo $RandomHelper[2]
 
 # Set Variables for folders
 $SlnFolder = $Name+"/"+$Name+".sln";
@@ -38,10 +39,6 @@ $UITestFolder=$UILayer+"/"+$UITest+"/"+$UITest+".csproj";
 $InfraDataTestFolder=$InfraLayer+"/"+$InfraDataTest+"/"+$InfraDataTest+".csproj";
 $ServiceServiceTestFolder=$ServiceLayer+"/"+$ServiceServiceTest+"/"+$ServiceServiceTest+".csproj";
 $DomainTestFolder=$DomainLayer+"/"+$DomainTest+"/"+$DomainTest+".csproj";
-cls
-echo $DomainTest
-echo $RandomHelper[2]
-echo $RandomHelper[2].GetType()
 
 md $Name
 cd $Name
@@ -74,10 +71,14 @@ cd..
 cd $DomainLayer
 dotnet new classlib -o $DomainObject
 dotnet new classlib -o $DomainAbstract
-dotnet new mstest -o $DomainTest
+dotnet new classlib -o $DomainTest
 cd $DomainTest
-New-Item -Path . -Name RandomHelper.cs -Value $RandomHelper
 New-Item -Path . -Name ModelFactory.cs
+New-Item -Path . -Name RandomHelper.cs
+foreach ($lineOfCode in $RandomHelper)
+{
+    $lineOfCode | Out-File -FilePath ./RandomHelper.cs -Append
+}
 cd ..
 cd ..
 # Add project references to solution
